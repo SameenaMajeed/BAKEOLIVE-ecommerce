@@ -1,0 +1,103 @@
+<%- include('../adminLayouts/homehead.ejs') %>
+
+  <div class="container">
+
+
+    <form action="/admin/add-banner" method="post" id="form" class="mx-auto mt-5 p-4 bg-light" style="max-width: 600px;">
+      <h2 class="mb-3">Add Banner</h2>
+
+      <div class="mb-3">
+        <label for="exampleInputLastname" class="form-label">Image</label>
+        <img src="" id="imagePreview1" alt="Preview"
+          style="max-width: 300px; max-height: 300px; margin-top: 10px; display:none;"><br>
+        <input type="file" class="form-control" id="exampleInputLastname" name="image" onchange="previewImage(this)">
+        <div class="error text-danger"></div>
+      </div>
+      <div class="mb-3">
+        <label for="exampleInputLastname1" class="form-label">Position <span class="text-warning">*where you want this
+            banner (home1, home2, home3)</span></label>
+
+        <input type="text" class="form-control" id="exampleInputLastname1" name="position">
+        <div class="error text-danger"></div>
+      </div>
+
+
+
+      <button type="submit" class="btn btn-primary">ADD</button> 
+    </form>
+  </div>
+
+
+  <script>
+    function previewImage(input) {
+      const preview = document.getElementById('imagePreview1');
+      const file = input.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        preview.src = '';
+        preview.style.display = 'none';
+      }
+    }
+
+    const form = document.getElementById('form');
+    const Image = document.getElementById('exampleInputLastname');
+    const Position = document.getElementById('exampleInputLastname1');
+
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      validateInputs();
+    });
+
+    const setError = (element, message) => {
+      const inputControl = element.parentElement;
+      const errorDisplay = inputControl.querySelector('.error');
+
+      errorDisplay.innerText = message;
+      inputControl.classList.add('error');
+      inputControl.classList.remove('success');
+    }
+
+    const setSuccess = element => {
+      const inputControl = element.parentElement;
+      const errorDisplay = inputControl.querySelector('.error');
+
+      errorDisplay.innerText = '';
+      inputControl.classList.add('success');
+      inputControl.classList.remove('error')
+    }
+
+    const validateInputs = () => {
+      const imageValue = Image.value.trim();
+      const positionValue = Position.value.trim();
+
+      if (imageValue === '') {
+        setError(Image, 'Image is required');
+      } else {
+        setSuccess(Image)
+      }
+
+      if (positionValue === '') {
+        setError(Position, 'Position is required');
+      } else {
+        setSuccess(Position)
+      }
+
+      const allInputsValid = document.querySelectorAll('.success').length === 2; // Adjust the count based on the number of input fields
+      if (allInputsValid) {
+        form.submit(); // Manually submit the form
+      }
+
+
+    }
+
+  </script>
+
+  <%- include('../adminLayouts/homefooter.ejs') %>

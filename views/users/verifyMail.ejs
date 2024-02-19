@@ -1,0 +1,57 @@
+<%- include('../userLayouts/verifyhead.ejs') %>
+
+
+    <div class="d-flex justify-content-center align-items-center  ">
+        <div class="card py-5 px-3 ">
+            <h3 class="m-0" style="color:rgb(59, 8, 34); font-weight: bold;"> Mobile Phone Verification</h3><span class="mobile-text" style="font-size: 15px;">Enter the code we just send on your
+                mobile phone</span>
+            <form action="/verifyMail" method="post" onsubmit="return validateForm()">
+
+                <% if (typeof error !== 'undefined' && error) { %>
+                    <div class="alert alert-danger mt-3" role="alert">
+                        <%= error %>
+                    </div>
+                <% } %>
+
+                <input type="hidden" name="userId" value="<%= userId %>">
+                <div class="d-flex flex-row mt-5">
+                    <input type="text" name="otp" id="otpInput" class="form-control" autofocus="">
+                    <span id="otpError" class="error-message" style="color: red;"></span>
+                </div>                               
+                <div  class="text-center mt-3">
+                    <input type="submit" value="Verify" class="btn btn-primary btn-lg btn-block">
+                </div>
+                
+            </form>
+            <div class="text-center mt-3">
+                <span class="d-block mobile-text">Don't receive the code?</span>
+                <a href="/resendOtp/<%= userId %>" class="font-weight-bold text-danger cursor">Resend</a>
+            </div>
+        </div>
+    </div>    
+
+
+    <script>
+        function validateForm() {
+            var otpInput = document.getElementById('otpInput').value;
+            var otpError = document.getElementById('otpError');
+    
+            // Validate OTP (assuming it should be a 4-digit number)
+            var otpRegex = /^\d{4}$/;
+            if (!otpRegex.test(otpInput)) {
+                otpError.textContent = 'Please enter a valid 4-digit OTP.';
+                otpError.style.display = 'block'; // Display the error message
+                return false;
+            } else {
+                otpError.textContent = ''; 
+                otpError.style.display = 'none'; 
+            }
+    
+            // If validation passes, the form will be submitted
+            return true;
+        }
+    </script>
+    
+    
+
+<%- include('../userLayouts/verifyfooter.ejs') %>

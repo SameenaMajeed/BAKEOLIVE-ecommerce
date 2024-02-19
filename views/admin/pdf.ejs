@@ -1,0 +1,87 @@
+<div class="container">
+  <h1 style="text-align: center; font-weight: bolder;">ORDER DETAILS</h1>
+
+  <table class="table my-3" id="userTable" border="1"> 
+
+    <thead>
+      <tr>
+        <th scope="col" style="border: 1px solid black;">Name</th>
+        <th scope="col" style="border: 1px solid black;">Quantity</th>
+        <th scope="col" style="border: 1px solid black;">Total Price</th>
+        <th scope="col" style="border: 1px solid black;">Address</th>
+        <th scope="col" style="border: 1px solid black;">Full name</th>
+        <th scope="col" style="border: 1px solid black;">Email</th>
+        <th scope="col" style="border: 1px solid black;">paymentMethod</th>
+        <th scope="col" style="border: 1px solid black;">Date</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <% orderData.forEach(function(value, index) { %>
+
+        <tr style="margin-bottom: 10px;">
+
+          <td style="border: 1px solid black;"> 
+            <% if (value.products && value.products.length > 0) { %>
+              <% value.products.forEach(function(product) { %>
+                <%= product.product.name %>
+              <% }); %>
+            <% } else { %>
+              N/A
+            <% } %>
+          </td>
+
+          <td style="border: 1px solid black;"> 
+            <% if (value.products && value.products.length > 0) { %>
+              <% value.products.forEach(function(product) { %>
+                Quantity: <%= product.quantity %>
+              <% }); %>
+            <% } else { %>
+              N/A
+            <% } %>
+          </td>
+
+          <td style="border: 1px solid black;"> 
+            <%= value.totalPrice %>/-
+          </td>
+
+          <% if (Array.isArray(value.address)) { %>
+            <td style="border: 1px solid black;"> 
+              <% value.address.forEach(function(address) { %>
+                <%= address.address %><br>
+                Pincode: <%= address.pincode %><br>
+                District: <%= address.district %><br>
+                City: <%= address.city %>
+              <% }); %>
+            </td>
+          <% } else if (value.address && typeof value.address === 'object') { %>
+            <td style="border: 1px solid black;">
+              <%= value.address.address %><br>
+              Pincode: <%= value.address.pincode %><br>
+              District: <%= value.address.district %><br>
+              City: <%= value.address.city %>
+            </td>
+          <% } else { %>
+            <td style="border: 1px solid black;">N/A</td>
+          <% } %>
+
+          <td style="border: 1px solid black;"> 
+            <%= value.name %>
+          </td>
+          <td style="border: 1px solid black;">
+            <%= value.email %>
+          </td>
+          <td style="border: 1px solid black;"> 
+            <%= value.paymentMethod %>
+          </td>
+          <td style="border: 1px solid black;"> 
+            <%= value.orderPlacedAt %>
+          </td>
+        </tr>
+
+      <% }); %>
+
+    </tbody>
+
+  </table>
+</div>

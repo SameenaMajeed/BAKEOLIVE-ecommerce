@@ -1,0 +1,27 @@
+<%- include('../userLayouts/userhead.ejs') %>
+
+<div class="container">
+  <div class="row">
+    <% if (product.length > 0) { %>
+      <% for (let i = 0; i < product.length; i++) { %>
+        <div class="col-md-4 mb-3">
+          <div class="card" style="width: 18rem;">
+            <a href="">
+              <img src="/public/productImage/<%= product[i].image[0] %>" class="card-img-top product-image" alt="Description of the image">
+            </a>
+            <div class="card-body">
+              <p class="card-text">ALL CAKES</p>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    <% } else { %>
+      <div class="col">
+        <p>Products Not Found</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<a href="/logout">logout</a>
+<%- include('../userLayouts/footer.ejs') %>

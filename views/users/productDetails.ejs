@@ -1,0 +1,238 @@
+<%- include('../userLayouts/userhead.ejs') %>
+
+  <style>
+    body {
+      background-color: #000
+    }
+
+    .card {
+      border: none
+    }
+
+    .product {
+      background-color: #eee
+    }
+
+    .brand {
+      font-size: 13px
+    }
+
+    .act-price {
+      color: red;
+      font-weight: 700
+    }
+
+    .dis-price {
+      text-decoration: line-through
+    }
+
+    .about {
+      font-size: 14px
+    }
+
+    .color {
+      margin-bottom: 10px
+    }
+
+    label.radio {
+      cursor: pointer
+    }
+
+    label.radio input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      visibility: hidden;
+      pointer-events: none
+    }
+
+    label.radio span {
+      padding: 2px 9px;
+      border: 2px solid #ff0000;
+      display: inline-block;
+      color: #ff0000;
+      border-radius: 3px;
+      text-transform: uppercase
+    }
+
+    label.radio input:checked+span {
+      border-color: #ff0000;
+      background-color: #ff0000;
+      color: #fff
+    }
+
+    .btn-danger {
+      background-color: #ff0000 !important;
+      border-color: #ff0000 !important
+    }
+
+    .btn-danger:hover {
+      background-color: #da0606 !important;
+      border-color: #da0606 !important
+    }
+
+    .btn-danger:focus {
+      box-shadow: none
+    }
+
+    .cart i {
+      margin-right: 10px
+    }
+
+
+    #main-image {
+      cursor: pointer;
+    }
+
+    #zoom-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      z-index: 1000;
+    }
+
+    .zoom-image {
+      max-width: 100%;
+      max-height: 100%;
+      transition: transform 0.3s ease-out;
+    }
+  </style>
+
+
+  <div class="mt-5 ms-5">
+    <a href="/allProduct" class="btn btn-dark">BACK</a>
+  </div>
+
+  <div class="container mt-5 mb-5 ">
+    <div class="row d-flex justify-content-center">
+      <div class="col-md-10">
+        <div class="card">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="images p-3">
+                <div id="zoom-overlay" class="zoom-overlay">
+                  <img id="zoom-image" class="zoom-image" src="/public/productImage/<%= product.image[0] %>"
+                    alt="Zoomed Image">
+                </div>
+                <div class="text-center p-4">
+                  <img id="main-image" src="/public/productImage/<%= product.image[0] %>" width="250" />
+                </div>
+                <div class="thumbnail text-center">
+                  <% if (product && product.image && product.image.length> 1) { %>
+                    <% for (let i=0; i < product.image.length; i++) { %>
+                      <img onclick="change_image(this)" src="/public/productImage/<%= product.image[i] %>" width="70">
+                      <% } %>
+                        <% } %>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="product p-4">
+                <!-- <div class="d-flex justify-content-between align-items-center">
+                              <div class="d-flex align-items-center"> <i class="fa fa-long-arrow-left"></i> <span class="ml-1">Back</span> </div> <i class="fa fa-shopping-cart text-muted"></i>
+                          </div> -->
+                <div class="mt-4 mb-3">
+                  <!-- <span class="text-uppercase text-muted brand">Orianz</span> -->
+                  <h5 class="text-uppercase">
+                    <%= product.name %>
+                  </h5>
+
+                  <div class="price d-flex flex-row align-items-center"> 
+                    <% if (product.is_offer) { %>
+                    <span class="act-price"> <%= product.price %></span>
+                    <div class="ml-2"> <small class="dis-price"><%= product.earlierPrice %></small></div>
+                    <% } else { %>
+                      Rs.<%= product.price %>
+                  <% } %>
+                  </div>
+                </div>
+                <p class="about">
+                  <%= product.description %>
+                </p>
+                <div class="sizes mt-5">
+                  <h6 class="text-uppercase">Weight</h6>
+                  <label class="radio"> <input type="radio" name="quantity" value="500gm" checked> <span>500gm</span>
+                  </label>
+                  <label class="radio"> <input type="radio" name="quantity" value="1kg"> <span>1kg</span>
+                  </label> <label class="radio"> <input type="radio" name="quantity" value="1.5kg">
+                    <span>1.5kg</span> </label>
+                  <label class="radio"> <input type="radio" name="quantity" value="2kg">
+                    <span>2kg</span> </label>
+                  <label class="radio"> <input type="radio" name="quantity" value="3kg">
+                    <span>3kg</span> </label>
+                  <label class="radio"> <input type="radio" name="quantity" value="4kg"> <span>4kg</span> </label>
+                </div>
+                <div class="cart mt-4 align-items-center">
+                  <a href="/add-to-cart/<%= product._id %>" class="btn btn-danger text-uppercase mr-2 px-4">Add to
+                    cart</a>
+                  <i class="fa fa-heart text-muted"></i> <i class="fa fa-share-alt text-muted"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    function change_image(image) {
+
+      var container = document.getElementById("main-image");
+
+      container.src = image.src;
+    }
+    document.addEventListener("DOMContentLoaded", function (event) {
+
+    })
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var mainImage = document.getElementById("main-image");
+      var zoomOverlay = document.getElementById("zoom-overlay");
+      var zoomImage = document.getElementById("zoom-image");
+
+      mainImage.addEventListener("mouseenter", function () {
+        zoomImage.src = mainImage.src;
+        zoomOverlay.style.display = "flex";
+      });
+
+      mainImage.addEventListener("mousemove", function (e) {
+        var rect = mainImage.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+
+        var scale = 2; // Adjust the scale factor as needed
+        var transformValue = "scale(" + scale + ")";
+        var translateValue = "translate(" + -(x * (scale - 1)) + "px, " + -(y * (scale - 1)) + "px)";
+
+        zoomImage.style.transform = transformValue + " " + translateValue;
+      });
+
+      mainImage.addEventListener("mouseleave", function () {
+        resetZoom();
+      });
+
+      zoomOverlay.addEventListener("mouseleave", function () {
+        resetZoom();
+      });
+
+      function resetZoom() {
+        zoomOverlay.style.display = "none";
+        zoomImage.style.transform = "none";
+      }
+    })
+
+
+  </script>
+
+
+  <%- include('../userLayouts/userFoot.ejs') %>

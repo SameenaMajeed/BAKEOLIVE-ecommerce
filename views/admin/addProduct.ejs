@@ -1,0 +1,174 @@
+<%- include('../adminLayouts/homehead.ejs') %>
+
+<style>
+  .image-preview-container {
+    position: relative;
+    margin: 5px;
+  }
+
+  .close-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    color: red;
+  }
+</style>
+
+<div class="container">
+  <form id="addProductForm" class="mx-auto mt-5 p-4 bg-light" style="max-width: 600px;" action="/admin/addProduct" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+    <h1 class="text-center mb-4">ADD PRODUCT</h1>
+
+    <div class="mb-3 mt-5">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-control" name="name" id="name">
+      <small id="nameError" class="text-danger"></small>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Quantity</label>
+      <input type="text" class="form-control" name="quantity" id="quantity">
+      <small id="quantityError" class="text-danger"></small>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Price</label>
+      <input type="text" class="form-control" name="price" id="price">
+      <small id="priceError" class="text-danger"></small>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" name="description" id="description"></textarea>
+      <small id="descriptionError" class="text-danger"></small>
+    </div>
+    
+
+    <div class="mb-3">
+      <label class="form-label" for="product_categorie">PRODUCT CATEGORY</label>
+      <div class="form-label">
+        <% if (category.length > 0) { %>
+          <select id="product_categorie" name="category_id" class="form-control">
+            <% category.forEach(category => { %>
+              <option value="<%= category._id %>">
+                <%= category.categoryName %>
+              </option>
+            <% }); %>
+          </select>
+        <% } else { %>
+          <p>No categories available</p>
+        <% } %>
+        <small id="categoryError" class="text-danger"></small>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Image</label>
+      <input type="file" name="image" class="form-control" id="image" multiple onchange="previewImages(this)">
+      <small id="imageError" class="text-danger"></small>
+      <div id="image-preview-container" class="mt-2 d-flex flex-wrap"></div>
+    </div>
+
+    <div class="text-center">
+      <input type="submit" value="ADD PRODUCT" class="btn btn-outline-success">
+    </div>
+
+    <br><br>
+    <% if (typeof message !== 'undefined') { %>
+      <p style="color:rgb(128, 23, 0);font-weight: bold;">
+        <%= message %>
+      </p>
+    <% } %>
+  </form>
+</div>
+
+<script>
+  function previewImages(input) {
+    var previewContainer = document.getElementById('image-preview-container');
+    var files = input.files;
+
+    for (var i = 0; i < files.length; i++) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var imgContainer = document.createElement('div');
+        imgContainer.classList.add('image-preview-container');
+
+        var img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.maxWidth = '100px';
+        img.style.height = 'auto';
+
+        var closeButton = document.createElement('div');
+        closeButton.classList.add('close-icon');
+        closeButton.innerHTML = '&#10006;';
+
+        closeButton.addEventListener('click', function () {
+          imgContainer.remove();
+        });
+
+        imgContainer.appendChild(img);
+        imgContainer.appendChild(closeButton);
+        previewContainer.appendChild(imgContainer);
+      };
+      reader.readAsDataURL(files[i]);
+    }
+  }
+
+  function validateForm() {
+    var name = document.getElementById("name").value;
+    var quantity = document.getElementById("quantity").value;
+    var price = document.getElementById("price").value;
+    var description = document.getElementById("description").value;
+    var imageInput = document.getElementById("image");
+    var category = document.getElementById("product_categorie").value;
+
+    // Reset previous error messages
+    document.getElementById("nameError").textContent = "";
+    document.getElementById("quantityError").textContent = "";
+    document.getElementById("priceError").textContent = "";
+    document.getElementById("descriptionError").textContent = "";
+    document.getElementById("categoryError").textContent = "";
+    document.getElementById("imageError").textContent = "";
+
+    // Simple validation
+    if (name.trim() === "") {
+      document.getElementById("nameError").textContent = "Name is required";
+    }
+
+    if (quantity.trim() === "") {
+      document.getElementById("quantityError").textContent = "Quantity is required";
+    }
+
+    if (price.trim() === "") {
+      document.getElementById("priceError").textContent = "Price is required";
+    }
+
+    if (description.trim() === "") {
+      document.getElementById("descriptionError").textContent = "Description is required";
+    }
+
+    if (imageInput.files.length === 0 || imageInput.files.length > 3) {
+      document.getElementById("imageError").textContent = "Please select exactly 3 images";
+    }
+
+    if (category.trim() === "") {
+      document.getElementById("categoryError").textContent = "Category is required";
+    }
+
+    // Check if any error messages are displayed
+    if (
+      document.getElementById("nameError").textContent ||
+      document.getElementById("quantityError").textContent ||
+      document.getElementById("priceError").textContent ||
+      document.getElementById("descriptionError").textContent ||
+      document.getElementById("imageError").textContent ||
+      document.getElementById("categoryError").textContent
+    ) {
+      return false; // Prevent form submission if there are errors
+    }
+
+    return true; // Allow the form to be submitted
+  }
+</script>
+
+<%- include('../adminLayouts/homefooter.ejs') %>

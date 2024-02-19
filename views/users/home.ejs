@@ -1,0 +1,133 @@
+<%- include('../userLayouts/userhead.ejs') %>
+
+<style>
+  .card {
+    margin-right: 10px; 
+  }
+</style>
+
+<div class="home">
+  <div class="content" data-aos="zoom-out-right">
+    <h3>Birthdays are nature’s way of telling
+      <br>you to eat more cake.
+    </h3>
+    <h2>Category <span class="changecontent"></span></h2>
+    <a href="#" class="btn">Order Now</a>
+  </div>
+</div>
+
+<div class="d-flex flex-wrap mt-4 justify-content-center">
+  <div class="card mb-4" style="width: 18rem;">
+      <a href="/allProduct">
+          <img src="/public/photo/box1.jpg" class="card-img-top" alt="Description of the image">
+      </a>
+      <div class="card-body">
+          <p class="card-text">ALL CAKES</p>
+      </div>
+  </div>
+
+  <div class="card mb-4" style="width: 18rem;">
+      <a href="/allChocolateCake">
+          <img src="/public/photo/2.jpg" class="card-img-top" alt="Description of the image">
+      </a>
+      <div class="card-body">
+          <p class="card-text">CHOCOLATE CAKE</p>
+      </div>
+  </div>
+
+  <div class="card mb-4" style="width: 18rem;">
+      <a href="/allCupCake">
+          <img src="/public/photo/3.jpg" class="card-img-top" alt="Description of the image">
+      </a>
+      <div class="card-body">
+          <p class="card-text">CUP CAKE</p>
+      </div>
+  </div>
+
+  <div class="card mb-4" style="width: 18rem;">
+      <a href="/dreamCake">
+          <img src="/public/photo/1.jpg" class="card-img-top" alt="Description of the image">
+      </a>
+      <div class="card-body">
+          <p class="card-text">DREAM CAKE</p>
+      </div>
+  </div>
+</div>
+
+
+
+
+<div class="banner" data-aos="fade-up" data-aos-duration="1500">
+  <div class="content">
+    <h3>Delicious Cake</h3>
+    <h2>UPTO 50% OFF</h2>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, quod.</p>
+    <div id="btnorder"><button>Order Now</button></div>
+  </div>
+  <div class="img">
+    <img src="/public/photo/banner-background.png" alt="">
+  </div>
+</div>
+
+<section id="gallary" data-aos="fade-up" data-aos-duration="1500">
+  <div class="container">
+    <h1>OUR GALLARY</h1>
+    <div class="row" style="margin-top: 30px;">
+      <div class="col-md-4 py-3 py-md-0">
+        <div class="card">
+          <div class="overlay">
+            <h3 class="text-center">Donuts</h3>
+          </div>
+          <img src="/public/photo/o1.png" alt="">
+        </div>
+      </div>
+      <div class="col-md-4 py-3 py-md-0">
+        <div class="card">
+          <div class="overlay">
+            <h3 class="text-center">Ice Cream</h3>
+          </div>
+          <img src="/public/photo/o2.png" alt="">
+        </div>
+      </div>
+      <div class="col-md-4 py-3 py-md-0">
+        <div class="card">
+          <div class="overlay">
+            <h3 class="text-center">Cup Cake</h3>
+          </div>
+          <img src="/public/photo/o3.png" alt="">
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row" style="margin-top: 30px;" data-aos="fade-up" data-aos-duration="1500">
+      <div class="col-md-4 py-3 py-md-0">
+        <div class="card">
+          <div class="overlay">
+            <h3 class="text-center">Delicious Cake</h3>
+          </div>
+          <img src="/public/photo/o4.png" alt="">
+        </div>
+      </div>
+      <div class="col-md-4 py-3 py-md-0">
+        <div class="card">
+          <div class="overlay">
+            <h3 class="text-center">Chocolate Cake</h3>
+          </div>
+          <img src="/public/photo/o5.png" alt="">
+        </div>
+      </div>
+      <div class="col-md-4 py-3 py-md-0">
+        <div class="card">
+          <div class="overlay">
+            <h3 class="text-center">Slice Cake</h3>
+          </div>
+          <img src="/public/photo/o6.png" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<%- include('../userLayouts/userFoot.ejs') %>
