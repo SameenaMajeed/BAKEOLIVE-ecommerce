@@ -7,134 +7,150 @@
     @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
 
     body {
-        background-color: #eeeeee;
-        font-family: 'Open Sans', serif;
-        font-size: 14px;
+      background-color: #eeeeee;
+      font-family: 'Open Sans', serif;
+      font-size: 14px;
     }
 
     .container-fluid {
-        margin-top: 70px;
+      margin-top: 70px;
     }
 
     .card-body {
-        flex: 1 1 auto;
-        padding: 1.40rem;
+      flex: 1 1 auto;
+      padding: 1.40rem;
     }
 
     .img-sm {
-        width: 100%; /* Adjusted for responsiveness */
-        max-width: 80px; /* Maximum width */
-        height: auto;
+      width: 100%;
+      /* Adjusted for responsiveness */
+      max-width: 80px;
+      /* Maximum width */
+      height: auto;
     }
 
     .itemside .info {
-        padding-left: 15px;
-        padding-right: 7px;
+      padding-left: 15px;
+      padding-right: 7px;
     }
 
     .table-shopping-cart .price-wrap {
-        line-height: 1.2;
+      line-height: 1.2;
     }
 
     .table-shopping-cart .price {
-        font-weight: bold;
-        margin-right: 5px;
-        display: block;
+      font-weight: bold;
+      margin-right: 5px;
+      display: block;
     }
 
     .text-muted {
-        color: #969696 !important;
+      color: #969696 !important;
     }
 
     a {
-        text-decoration: none !important;
+      text-decoration: none !important;
     }
 
     .card {
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-        word-wrap: break-word;
-        background-color: #fff;
-        border: 1px solid rgba(0, 0, 0, .125);
-        border-radius: 0;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      word-wrap: break-word;
+      background-color: #fff;
+      border: 1px solid rgba(0, 0, 0, .125);
+      border-radius: 0;
     }
 
     .itemside {
-        display: flex;
-        width: 100%;
+      display: flex;
+      width: 100%;
     }
 
     .dlist-align {
-        display: flex;
+      display: flex;
     }
 
     [class*="dlist-"] {
-        margin-bottom: 5px;
+      margin-bottom: 5px;
     }
 
     .coupon {
-        border-radius: 1px;
+      border-radius: 1px;
     }
 
     .price {
-        font-weight: 600;
-        color: #212529;
+      font-weight: 600;
+      color: #212529;
     }
 
     .btn.btn-out {
-        outline: 1px solid #fff;
-        outline-offset: -5px;
+      outline: 1px solid #fff;
+      outline-offset: -5px;
     }
 
     .btn-main {
-        border-radius: 2px;
-        text-transform: capitalize;
-        font-size: 15px;
-        padding: 10px 19px;
-        cursor: pointer;
-        color: #fff;
-        width: 100%;
+      border-radius: 2px;
+      text-transform: capitalize;
+      font-size: 15px;
+      padding: 10px 19px;
+      cursor: pointer;
+      color: #fff;
+      width: 100%;
     }
 
     .btn-light {
-        color: #ffffff;
-        background-color: #F44336;
-        border-color: #f8f9fa;
-        font-size: 12px;
+      color: #ffffff;
+      background-color: #F44336;
+      border-color: #f8f9fa;
+      font-size: 12px;
     }
 
     .btn-light:hover {
-        color: #ffffff;
-        background-color: #F44336;
-        border-color: #F44336;
+      color: #ffffff;
+      background-color: #F44336;
+      border-color: #F44336;
     }
 
     .btn-apply {
-        font-size: 11px;
+      font-size: 11px;
     }
 
     /* Media query for smaller screens */
     @media only screen and (max-width: 768px) {
-        .itemside {
-            flex-direction: column;
-        }
+      .itemside {
+        flex-direction: column;
+      }
 
-        .itemside .info {
-            padding-left: 0;
-            padding-top: 15px; /* Adjusted padding */
-        }
+      .itemside .info {
+        padding-left: 0;
+        padding-top: 15px;
+        /* Adjusted padding */
+      }
 
-        .img-sm {
-            margin-bottom: 15px; /* Adjusted margin for better spacing */
-        }
+      .img-sm {
+        margin-bottom: 15px;
+        /* Adjusted margin for better spacing */
+      }
 
-        .btn-main,
-        .btn-light {
-            width: auto;
-        }
+      .btn-main,
+      .btn-light {
+        width: auto;
+      }
+
+      .text-right.d-none {
+        text-align: left !important;
+      }
+
+      .text-right.d-none a,
+      .text-right.d-none button {
+        margin-top: 10px;
+        /* Adjusted margin for better spacing */
+        width: 100%;
+        /* Make buttons take full width on smaller screens */
+      }
     }
-</style>
+  </style>
 
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
