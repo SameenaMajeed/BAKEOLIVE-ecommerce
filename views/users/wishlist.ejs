@@ -185,6 +185,46 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
         }
+        @media only screen and (max-width: 768px) {
+        .table-wishlist tr td .img-product {
+            width: 100%; /* Adjust image width for smaller screens */
+            float: none;
+            margin-left: 0;
+            margin-right: 0;
+            line-height: normal;
+        }
+
+        .table-wishlist tr td .name-product {
+            width: 100%; /* Make the product name take full width on smaller screens */
+            padding-top: 15px; /* Increase padding for better spacing */
+        }
+
+        .table-wishlist tr td.price {
+            font-weight: 400; /* Reduce font weight for better readability */
+        }
+
+        .round-black-btn {
+            width: 100%; /* Make buttons take full width on smaller screens */
+        }
+
+        .mb-10 {
+            margin-bottom: 15px !important; /* Increase margin for better spacing */
+        }
+
+        .mt-30 {
+            margin-top: 20px !important; /* Adjust margin for better spacing */
+        }
+
+        .main-heading.border-b {
+            padding-bottom: 10px; /* Reduce padding for better spacing */
+            margin-bottom: 10px !important;
+        }
+
+        .wishlist-box {
+            padding: 15px; /* Adjust padding for better spacing */
+            margin-top: 10px;
+        }
+    }
     </style>
 
     <div class="mt-5 ms-5">
@@ -216,36 +256,42 @@
                                                 <th width="10%"></th>
                                             </tr>
                                         </thead>
+
                                         <tbody>
                                             <% if (wishlist && wishlist.length> 0) { %>
                                                 <% wishlist.forEach(product=> { %>
                                                     <tr>
-                                                        <td width="45%">
+                                                        <td>
                                                             <div class="display-flex align-center">
                                                                 <div class="img-product">
                                                                     <%- console.log(product.image) %>
-                                                                    <% if (product && product.image && product.image.length > 0) { %>
-                                                                        <img src="/public/productImage/<%= product.image[0] %>" alt="ghj" class="">
-                                                                    <% } else { %>
-                                                                        <img src="/path/to/default/image.jpg" alt="Default Image" class="">
-                                                                    <% } %>
+                                                                        <% if (product && product.image &&
+                                                                            product.image.length> 0) { %>
+                                                                            <img src="/public/productImage/<%= product.image[0] %>"
+                                                                                alt="ghj" class="">
+                                                                            <% } else { %>
+                                                                                <img src="/path/to/default/image.jpg"
+                                                                                    alt="Default Image" class="">
+                                                                                <% } %>
                                                                 </div>
                                                                 <div class="name-product">
                                                                     <%= product.name || 'Product Name Not Available' %>
                                                                 </div>
                                                             </div>
                                                         </td>
-                                                        <td width="15%" class="price">RS.<%= product.price !==undefined
-                                                                ? product.price.toFixed(2) : 'N/A' %>
+                                                        <td class="price">RS.<%= product.price !==undefined ?
+                                                                product.price.toFixed(2) : 'N/A' %>
                                                         </td>
-                                                        <td width="15%"><span class="in-stock-box">In Stock</span></td>
-                                                        <td width="15%"><a href="/add-to-cart/<%= product._id %>"><button class="round-black-btn small-btn">Add to
-                                                                Cart</button></a></td>
-                                                        <td width="10%" class="text-center">
-                                                            <a href="/remove-from-wishlist/<%= product._id %>" class="">
-                                                                <img src="/public/photo/closs.png" width="50px" height="30px"></a></i>
+                                                        <td><span class="in-stock-box">In Stock</span></td>
+                                                        <td><a href="/add-to-cart/<%= product._id %>"><button
+                                                                    class="round-black-btn small-btn">Add to
+                                                                    Cart</button></a></td>
+                                                        <td class="text-center">
+                                                            <a href="/remove-from-wishlist/<%= product._id %>">
+                                                                <img src="/public/photo/closs.png" width="50px"
+                                                                    height="30px">
                                                             </a>
-                                                          </td>
+                                                        </td>
                                                     </tr>
                                                     <% }); %>
                                                         <% } else { %>
