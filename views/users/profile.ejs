@@ -452,17 +452,16 @@
             </div>
         </div>
     </div>
+
     <%- include('../userLayouts/userFoot.ejs') %>
 
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
         <script>
-
             async function downloadInvoice(orderId) {
                 try {
                     const response = await fetch(`/invoice?id=${orderId}`);
-
                     if (!response.ok) {
                         throw new Error(`Failed to download invoice: ${response.status} - ${response.statusText}`);
                     }
@@ -480,9 +479,27 @@
                 }
             }
 
+            function updateCancelButtonVisibility(orderId) {
+                const cancelButton = document.getElementById(`cancelButton_${orderId}`);
+                if (cancelButton && !cancelButton.hasAttribute('disabled') && cancelButton.style.display !== 'none') {
+                    fetch(`/order-placed-time/${orderId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const orderPlacedTime = new Date(data.orderPlacedTime);
+                            const currentTime = new Date();
+                            const timeDifferenceInHours = (currentTime - orderPlacedTime) / (1000 * 60 * 60);
+
+                            if (timeDifferenceInHours > 4) {
+                                cancelButton.style.display = 'none';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                }
+            }
 
             function cancelOrder(orderId) {
-                // You can use AJAX or fetch to send a request to your server to cancel the order
                 fetch(`/cancel-order/${orderId}`, {
                     method: 'POST',
                     headers: {
@@ -491,7 +508,6 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        // Use SweetAlert for custom alerts
                         Swal.fire({
                             title: 'Order Cancelled!',
                             text: data.message,
@@ -499,16 +515,15 @@
                             confirmButtonText: 'OK',
                         });
 
-                        // Disable the cancel button and update order status in the UI
                         const cancelButton = document.getElementById(`cancelButton_${orderId}`);
                         if (cancelButton) {
                             cancelButton.setAttribute('disabled', 'true');
                             cancelButton.innerHTML = 'Cancelled';
+                            updateCancelButtonVisibility(orderId);
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        // Use SweetAlert for custom error alerts
                         Swal.fire({
                             title: 'Error',
                             text: 'An error occurred while cancelling the order.',
@@ -520,11 +535,9 @@
 
             function deleteAddress(userId, addressId) {
                 if (confirm('Are you sure you want to delete this address?')) {
-                    // Redirect to deleteAddress route with userId and addressId
                     window.location.href = `/deleteAddress?userId=${userId}&addressId=${addressId}`;
                 }
             }
-
 
             function addAddress() {
                 const newAddress = document.getElementById('newAddress').value;
@@ -541,8 +554,8 @@
                     },
                     body: JSON.stringify({
                         userId: '<%= user._id %>',
-                        name: '<%= user.name %>',  // Assuming you want to send user details for the address
-                        email: '<%= user.email %>', // You can adjust this based on your needs
+                        name: '<%= user.name %>',
+                        email: '<%= user.email %>',
                         newAddress: newAddress,
                         city: city,
                         state: state,
@@ -556,7 +569,6 @@
                         if (data.success) {
                             location.reload();
                         } else {
-                            // Handle error
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error',
@@ -574,7 +586,6 @@
                 const newPassword = document.getElementById('newPassword').value;
                 const repeatPassword = document.getElementById('repeatPassword').value;
 
-                // Validate form data (you may add more validation as needed)
                 if (newPassword !== repeatPassword) {
                     Swal.fire({
                         icon: 'error',
@@ -583,7 +594,6 @@
                     return;
                 }
 
-                // Send the data to the server using AJAX or Fetch API
                 fetch('/change-password', {
                     method: 'POST',
                     headers: {
@@ -596,15 +606,12 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        // Handle the response from the server
                         if (data.success) {
-                            // Password change request received, show a success message to the user
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Password changed successfully!',
                             });
                         } else {
-                            // Password change failed, show an error message
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error',
@@ -614,7 +621,6 @@
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        // Handle other errors
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -624,20 +630,14 @@
             }
 
             $(document).ready(function () {
-                // Add an event listener for the Edit button
                 $('#editProfileBtn').click(function () {
-                    // Enable input fields for editing
                     $('input').prop('disabled', false);
-
-                    // Change button text and behavior
                     $(this).text('Save Changes').unbind('click').click(function () {
-                        // Handle the save changes logic
                         saveChanges();
                     });
                 });
 
                 function saveChanges() {
-                    // Extract updated values from input fields
                     var updatedUsername = $('#usernameInput').val();
                     var updatedName = $('#nameInput').val();
                     var updatedMobile = $('#mobileInput').val();
@@ -645,10 +645,9 @@
                     var updatedAddress = $('#addressInput').val();
                     var updatedEmail = $('#emailInput').val();
 
-                    // Send an AJAX request to update user details on the server
                     $.ajax({
                         type: 'POST',
-                        url: '/updateUserDetails', // Replace with your server endpoint
+                        url: '/updateUserDetails',
                         data: {
                             username: updatedUsername,
                             name: updatedName,
@@ -658,7 +657,6 @@
                             email: updatedEmail
                         },
                         success: function (response) {
-                            // Handle success (e.g., show a success message)
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Changes saved successfully!',
@@ -666,7 +664,6 @@
                             console.log('Changes saved successfully');
                         },
                         error: function (error) {
-                            // Handle error (e.g., show an error message)
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error saving changes',
@@ -676,11 +673,8 @@
                         },
                     });
 
-                    // Optionally, disable input fields and revert button text
                     $('input').prop('disabled', true);
-                    $('#editProfileBtn').text('Edit Profile').unbind('click').click(function () {
-                        // Reattach the original click event when reverting to edit mode
-                    });
+                    $('#editProfileBtn').text('Edit Profile').unbind('click').click(function () { });
                 }
             });
 
