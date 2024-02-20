@@ -361,10 +361,10 @@
                             <section class="h-100 gradient-custom">
                                 <div class="container py-5 h-100">
                                     <div class="row d-flex justify-content-center align-items-center h-100">
-                                        <div>
+                                        <div class="col-md-8"> <!-- Adjust the column size based on your design -->
                                             <% if (orderDetails) { %>
                                                 <% orderDetails.forEach((order, index)=> { %>
-                                                    <div style="background-color: #f792ad;">
+                                                    <div class="order-details-container" style="background-color: #f792ad; margin-bottom: 20px;">
                                                         <div class="d-flex justify-content-between pt-2">
                                                             <p class="fw-bold mb-0" style="font-weight: bold;">
                                                                 Order Details - <%= index + 1 %>
@@ -377,73 +377,55 @@
                                                         </div>
                                                         <% order.products.forEach((product, productIndex)=> { %>
                                                             <div class="card shadow-0 border mb-4">
-                                                                <div
-                                                                    class="card-body p-4 d-flex justify-content-between">
-                                                                    <div class="col-md-2">
+                                                                <div class="card-body p-4 d-md-flex justify-content-between align-items-center">
+                                                                    <div class="col-md-2 mb-3 mb-md-0">
                                                                         <img src="/public/productImage/<%= product.product && product.product.image && product.product.image[0] %>"
                                                                             style="height: 100px; width: 100px;"
                                                                             alt="<%= product.product && product.product.name %>">
-
                                                                     </div>
-                                                                    <div class="text-center">
-                                                                        <p>
-                                                                            <%= product.product && product.product.name
-                                                                                ? product.product.name : 'N/A' %>
-                                                                        </p>
+                                                                    <div class="text-center mb-3 mb-md-0">
+                                                                        <p><%= product.product && product.product.name ? product.product.name : 'N/A' %></p>
                                                                     </div>
-
-                                                                    <div class="col-md-2 text-center">
+                                                                    <div class="col-md-2 text-center mb-3 mb-md-0">
                                                                         <span>Qty: <%= product.quantity %></span>
                                                                     </div>
-                                                                    <div class="col-md-2 text-center">
-                                                                        <p>
-                                                                            <%= order.status %>
-                                                                        </p>
+                                                                    <div class="col-md-2 text-center mb-3 mb-md-0">
+                                                                        <p><%= order.status %></p>
                                                                     </div>
                                                                     <div class="col-md-2 text-center">
-                                                                        <p>Rs.<%= product.price !==undefined ?
-                                                                                product.price.toFixed(2) : 'N/A' %>
-                                                                        </p>
+                                                                        <p>Rs.<%= product.price !==undefined ? product.price.toFixed(2) : 'N/A' %></p>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <% }); %>
-
-                                                                <div class="d-flex justify-content-between">
-                                                                    <div class="col-md-2 text-center">
-                                                                        <% if (order.status !=='Cancelled' ) { %>
-                                                                            <button class="btn btn-primary"
-                                                                                onclick="downloadInvoice('<%= order._id %>')">Download
-                                                                                Invoice</button>
-                                                                            <% } %>
-                                                                    </div>
-
-                                                                    <div class="col-md-2 text-center">
-                                                                        <% if (order.status !=='Cancelled' ) { %>
-                                                                            <button id="cancelButton_<%= order._id %>"
-                                                                                class="btn btn-danger"
-                                                                                onclick="cancelOrder('<%= order._id %>')">Cancel</button>
-                                                                            <% } else { %>
-                                                                                <p>Order Cancelled</p>
-                                                                                <% if (order.walletAmountRefunded) { %>
-                                                                                    <p>Wallet Refund: Rs.<%=
-                                                                                            order.walletAmountRefunded.toFixed(2)
-                                                                                            %>
-                                                                                    </p>
-                                                                                    <% } %>
-                                                                                        <% } %>
-                                                                    </div>
-                                                                </div>
+                                                        <% }); %>
+                                                        <div class="d-flex justify-content-between">
+                                                            <div class="col-md-4 text-center mb-3 mb-md-0">
+                                                                <% if (order.status !=='Cancelled' ) { %>
+                                                                    <button class="btn btn-primary" onclick="downloadInvoice('<%= order._id %>')">Download Invoice</button>
+                                                                <% } %>
+                                                            </div>
+                                                            <div class="col-md-4 text-center">
+                                                                <% if (order.status !=='Cancelled' ) { %>
+                                                                    <button id="cancelButton_<%= order._id %>" class="btn btn-danger" onclick="cancelOrder('<%= order._id %>')">Cancel</button>
+                                                                <% } else { %>
+                                                                    <p>Order Cancelled</p>
+                                                                    <% if (order.walletAmountRefunded) { %>
+                                                                        <p>Wallet Refund: Rs.<%= order.walletAmountRefunded.toFixed(2) %></p>
+                                                                    <% } %>
+                                                                <% } %>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <% }); %>
-                                                        <% } else { %>
-                                                            <p>No order details found.</p>
-                                                            <% } %>
+                                                <% }); %>
+                                            <% } else { %>
+                                                <p>No order details found.</p>
+                                            <% } %>
                                         </div>
                                     </div>
                                 </div>
                             </section>
                         </div>
+                        
 
 
                     </div>
