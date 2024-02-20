@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config({path:'./config.env'});
 
 const mongoose = require('mongoose')
-mongoose.connect('mongodb+srv://sameenamajeed611:sameena@bakeolive.xb7xasz.mongodb.net/')
+mongoose.connect('mongodb+srv://sameenamajeed611:sameena@bakeolive.xb7xasz.mongodb.net/BAKEOlIVE')
 
 const {errorHandler,notFound}=require('./middleware/errorHandler');
 
