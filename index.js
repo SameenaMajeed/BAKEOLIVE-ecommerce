@@ -2,6 +2,19 @@
 const dotenv = require('dotenv');
 dotenv.config({path:'./config.env'});
 
+// const mongoose = require("mongoose");
+
+// let uri = 'mongodb+srv://sameenamajeed611:sameena@bakeolive.xb7xasz.mongodb.net/?retryWrites=true&w=majority;'
+
+// const connectDB = mongoose
+//   .connect(uri)
+//   .then(() => {
+//     console.log("connected");
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
+
 const mongoose = require('mongoose')
 mongoose.connect('mongodb+srv://sameenamajeed611:sameena@bakeolive.xb7xasz.mongodb.net/BAKEOlIVE')
 

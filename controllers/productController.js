@@ -286,15 +286,14 @@ const loadProduct = async (req, res) => {
 };
 
 const fetchCategoriesFromDatabase = async () => {
-
     const category = await Category.find();
     return category;
-
 };
 
 const addProduct = async (req, res) => {
+    let category;  // Define category outside the try block
     try {
-        const category = await Category.find()
+        category = await fetchCategoriesFromDatabase();
 
         // Validate if quantity and price are non-negative
         const quantity = parseInt(req.body.quantity);
@@ -308,6 +307,7 @@ const addProduct = async (req, res) => {
             name: req.body.name,
             quantity: quantity,
             price: price,
+            earlierPrice: req.body.earlierPrice, // Add earlierPrice field
             description: req.body.description,
             image: req.files ? req.files.map(file => file.filename) : [],
             category_id: req.body.category_id
@@ -325,7 +325,49 @@ const addProduct = async (req, res) => {
         console.log(error.message);
         res.render('addProduct', { message: 'Error adding product', category });
     }
-}
+};
+
+// const fetchCategoriesFromDatabase = async () => {
+
+//     const category = await Category.find();
+//     return category;
+
+// };
+
+// const addProduct = async (req, res) => {
+//     try {
+//         const category = await fetchCategoriesFromDatabase();
+
+//         // Validate if quantity and price are non-negative
+//         const quantity = parseInt(req.body.quantity);
+//         const price = parseFloat(req.body.price);
+
+//         if (quantity < 0 || price < 0) {
+//             return res.render('addProduct', { message: 'Quantity and price must be non-negative', category });
+//         }
+
+//         const product = new Product({
+//             name: req.body.name,
+//             quantity: quantity,
+//             price: price,
+//             description: req.body.description,
+//             image: req.files ? req.files.map(file => file.filename) : [],
+//             category_id: req.body.category_id
+//         });
+
+//         const productData = await product.save();
+
+//         if (productData) {
+//             res.redirect('/admin/viewProduct');
+//         } else {
+//             res.render('addProduct', { message: 'Something Wrong', category });
+//         }
+
+//     } catch (error) {
+//         console.log(error.message);
+//         res.render('addProduct', { message: 'Error adding product', category });
+//     }
+// }
 
 
 const softDeleteProduct = async (req, res) => {
