@@ -44,7 +44,6 @@
 
                 <thead>
                     <tr>
-                        <td scope="col">Sl.NO</td>
                         <th scope="col">Image1</th>
                         <th scope="col">Name</th>
                         <th scope="col">Quantity</th>
@@ -60,9 +59,7 @@
                     <% if (orderData.length> 0) { %>
                         <% for (let i=0; i < orderData.length; i++) { %>
                             <tr>
-                                <td>
-                                    <%= i+1 %>
-                                </td>
+
                                 <td>
                                     <% if (orderData[i].products && Array.isArray(orderData[i].products) &&
                                         orderData[i].products.length> 0) { %>
@@ -123,11 +120,12 @@
                                     <%= orderData[i].paymentMethod %>
                                 </td>
                                 <td>
-                                    <%= new Date(orderData[i].orderPlacedAt).toLocaleDateString() %>
+                                    <%= orderData[i].orderPlacedAt %>
                                 </td>
                             </tr>
                             <% } %>
-                                <% } %>
+                                <% }%>
+
                 </tbody>
             </table>
         </div>
@@ -171,7 +169,7 @@
         function appendToTable(filteredData) {
             var tableBody = document.getElementById('userTable').getElementsByTagName('tbody')[0];
             tableBody.innerHTML = '';
-
+            if (filteredData.length != 0) {
             // Check if filteredData is an array
             if (Array.isArray(filteredData)) {
                 // Append each row of filtered data to the table
@@ -206,7 +204,7 @@
                         // Add other cells and populate with data as needed
                         // Adjust the following lines based on your data structure
                         row.insertCell(1).textContent = value.products[0]?.product?.name || 'N/A';
-                        row.insertCell(2).textContent = value.products[0]?.product?.quantity || 'N/A';
+                        row.insertCell(2).textContent = value.products.map(product => product.quantity).join('<br>') || 'N/A';
                         row.insertCell(3).textContent = value.totalPrice || 'N/A';
                         var addressCell = row.insertCell(4);
                         if (value.address && typeof value.address === 'object') {
@@ -227,8 +225,17 @@
                     }
                 });
             }
+         } else {
+                // If filteredData is empty, display a message in a single row
+                var row = tableBody.insertRow();
+                var cell = row.insertCell(0);
+                cell.colSpan = 9; // Set colspan to the number of columns in your table
+
+                cell.textContent = 'No data available at this Dates';
+                cell.style.textAlign = 'center';
+            }
         }
 
     </script>
 
-<%- include('../adminLayouts/homefooter.ejs') %>
+    <%- include('../adminLayouts/homefooter.ejs') %>
