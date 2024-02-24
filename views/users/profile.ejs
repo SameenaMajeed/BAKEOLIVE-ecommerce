@@ -163,6 +163,17 @@
                                     </div>
 
                                     <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label">Referral Code</label>
+                                        <div class="col-sm-10">
+                                            <% if (user.referalCode) { %>
+                                                <p class="form-control"><%= user.referalCode %></p>
+                                            <% } else { %>
+                                                <p class="form-control">No referral code available</p>
+                                            <% } %>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Fullname</label>
                                         <div class="col-sm-10">
                                             <p class="form-control">
@@ -192,15 +203,14 @@
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Address</label>
                                         <div class="col-sm-10">
-                                            <% if (user.addresses && user.addresses.length> 0) { %>
-                                                <input type="text" name="addresses" id="addressInput"
-                                                    class="form-control" value="<%= user.addresses[0].address %>">
-                                                <% } else { %>
-                                                    <input type="text" name="addresses" id="addressInput"
-                                                        class="form-control" value="">
-                                                    <% } %>
+                                            <% if (user.addresses && user.addresses.length > 0) { %>
+                                                <p class="form-control"><%= user.addresses[0].address %></p>
+                                            <% } else { %>
+                                                <p class="form-control">No address available</p>
+                                            <% } %>
                                         </div>
                                     </div>
+                                    
 
 
 
