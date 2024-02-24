@@ -161,6 +161,171 @@
 
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var form = document.querySelector('.needs-validation');
+      console.log("Form Element:", form);
+      var addressSelect = document.getElementById('address');
+      var fullNameInput = document.getElementById('form3Example1n');
+
+      addressSelect.addEventListener('change', function () {
+        if (addressSelect.value !== "") {
+          var selectedAddress = addressSelect.options[addressSelect.selectedIndex];
+
+          fullNameInput.value = selectedAddress.dataset.name;
+          document.getElementById('form3Example8').value = selectedAddress.dataset.address;
+          document.querySelector('[name="state"]').value = selectedAddress.dataset.state;
+          document.querySelector('[name="city"]').value = selectedAddress.dataset.city;
+          document.getElementById('form3Example3').value = selectedAddress.dataset.pincode;
+          document.getElementById('form3Example2').value = selectedAddress.dataset.email;
+        } else {
+          fullNameInput.value = '';
+          document.getElementById('form3Example8').value = '';
+          document.querySelector('[name="state"]').value = '';
+          document.querySelector('[name="city"]').value = '';
+          document.getElementById('form3Example3').value = '';
+          document.getElementById('form3Example2').value = '';
+        }
+      });
+    });
+
+    async function placeOrder(event) {
+      try {
+        event.preventDefault();
+
+        const form = event.target;
+        const formData = new FormData(form);
+
+        const formDataObject = {};
+        formData.forEach((value, key) => {
+          formDataObject[key] = value;
+        });
+
+        console.log(formDataObject);
+
+        const response = await fetch('/place-order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formDataObject),
+        });
+
+        console.log('Client Response:', response);
+
+        if (!response.ok) {
+          console.error('Fetch error:', response.status, response.statusText);
+
+          if (response.status === 400) {
+            handleNonJsonResponse(response);
+          } else {
+            handleNonJsonResponse('Unexpected error');
+          }
+
+          return;
+        }
+
+        if (response.redirected) {
+          console.log('Redirect detected, navigating to:', response.url);
+          window.location.href = response.url;
+          return;
+        }
+
+        try {
+          const result = await response.json();
+          console.log('Parsed JSON Response:', result);
+
+          if (result.errorMessages) {
+            handleVerificationFailure(result.errorMessages);
+            return;
+          }
+
+          if (result.response && result.response.method === 'UPI') {
+            console.log('UPI payment detected');
+
+            const orderDetails = {
+              key: result.response.key_id,
+              amount: result.response.amount,
+              currency: 'INR',
+              order_id: result.response.order.id,
+              image: '',
+              handler: async function (result) {
+                const formDataClone = new FormData(form);
+                console.log('formDataClone:', formDataClone);
+
+                formDataClone.forEach((value, key) => {
+                  console.log(`${key}: ${value}`);
+                });
+
+                const verifyResponse = await fetch('/verifyRazorPay', {
+                  method: 'POST',
+                  body: formDataClone,
+                });
+
+                if (verifyResponse.ok) {
+                  const verifyResult = await verifyResponse.json();
+                  window.location.href = '/order-placed';
+                } else {
+                  const verifyResult = await verifyResponse.json();
+                  handleVerificationFailure(verifyResult.errorMessages);
+                }
+              },
+            };
+
+            console.log('Before Razorpay instantiation');
+            const razorpay = new Razorpay(orderDetails);
+            console.log('After Razorpay instantiation');
+
+            razorpay.on('payment.failed', function (response) {
+              alert(response.error.reason);
+            });
+            razorpay.open();
+          } else {
+            console.log('Fallback to order-placed');
+            window.location.href = '/order-placed';
+          }
+        } catch (jsonError) {
+          console.error('JSON parsing error:', jsonError);
+          handleNonJsonResponse('Unexpected response from the server');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        handleNonJsonResponse('Unexpected error');
+      }
+    }
+
+    function handleVerificationFailure(errorMessage) {
+      const customAlertContainer = document.getElementById('customAlertContainer');
+      const customAlertStrong = document.getElementById('customAlertStrong');
+
+      if (customAlertContainer && customAlertStrong) {
+        customAlertStrong.textContent = errorMessage;
+        customAlertContainer.style.display = 'block';
+        console.log('Failed to verify Razorpay payment');
+      } else {
+        console.error('Failed to set properties on null elements');
+      }
+    }
+
+    function handleNonJsonResponse(response) {
+      const customAlertContainer = document.getElementById('customAlertContainer');
+      const customAlertStrong = document.getElementById('customAlertStrong');
+
+      if (customAlertContainer && customAlertStrong) {
+        if (response.status === 400) {
+          customAlertStrong.textContent = 'Insufficient balance. Choose another option.';
+        } else {
+          customAlertStrong.textContent = 'Unexpected error';
+        }
+
+        customAlertContainer.style.display = 'block';
+        console.log('Failed to place order (non-JSON response)');
+      } else {
+        console.error('Failed to set properties on null elements');
+      }
+    }
+  </script>
+
+  <!-- <script>
 
     document.addEventListener('DOMContentLoaded', function () {
       var form = document.querySelector('.needs-validation');
@@ -226,9 +391,21 @@
 
         if (!response.ok) {
           console.error('Fetch error:', response.status, response.statusText);
-          handleNonJsonResponse('Failed to fetch data from the server');
+
+          if (response.status === 400) {
+            handleNonJsonResponse(response);
+          } else {
+            handleNonJsonResponse('Unexpected error');
+          }
+
           return;
         }
+
+        // if (!response.ok) {
+        //   console.error('Fetch error:', response.status, response.statusText);
+        //   handleNonJsonResponse(response);
+        //   return;
+        // }
 
         if (response.redirected) {
           console.log('Redirect detected, navigating to:', response.url);
@@ -239,6 +416,12 @@
         try {
           const result = await response.json();
           console.log('Parsed JSON Response:', result);
+
+          if (result.errorMessages) {
+            // Display error message from the server
+            handleVerificationFailure(result.errorMessages);
+            return;
+          }
 
           if (result.response && result.response.method === 'UPI') {
             console.log('UPI payment detected');
@@ -289,7 +472,7 @@
               alert(response.error.reason);
             });
             razorpay.open();
-          } 
+          }
           else {
             console.log('Fallback to order-placed');
             window.location.href = '/order-placed';
@@ -318,19 +501,38 @@
         console.error('Failed to set properties on null elements');
       }
     }
-
-    function handleNonJsonResponse(errorMessage = 'Unexpected error') {
+    
+    function handleNonJsonResponse(response) {
       const customAlertContainer = document.getElementById('customAlertContainer');
       const customAlertStrong = document.getElementById('customAlertStrong');
 
       if (customAlertContainer && customAlertStrong) {
-        customAlertStrong.textContent = errorMessage;
+        if (response.status === 400) {
+          customAlertStrong.textContent = 'Insufficient balance. Choose another option.';
+        } else {
+          customAlertStrong.textContent = 'Unexpected error';
+        }
+
         customAlertContainer.style.display = 'block';
         console.log('Failed to place order (non-JSON response)');
       } else {
         console.error('Failed to set properties on null elements');
       }
     }
-  </script>
+
+    // function handleNonJsonResponse(errorMessage = 'Unexpected error') {
+    //   const customAlertContainer = document.getElementById('customAlertContainer');
+    //   const customAlertStrong = document.getElementById('customAlertStrong');
+
+    //   if (customAlertContainer && customAlertStrong) {
+    //     customAlertStrong.textContent = errorMessage;
+    //     customAlertContainer.style.display = 'block';
+    //     console.log('Failed to place order (non-JSON response)');
+    //   } else {
+    //     console.error('Failed to set properties on null elements');
+    //   }
+    // }
+
+  </script> -->
 
   <%- include('../userLayouts/userFoot.ejs') %>
