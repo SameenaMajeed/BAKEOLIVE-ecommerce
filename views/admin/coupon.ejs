@@ -55,14 +55,15 @@
     const discount = document.getElementById('discount').value.trim();
     const minPurchase = document.getElementById('minPurchase').value.trim();
     const discountType = document.getElementById('discountType').value.trim();
-    const expiryDate = document.getElementById('expiry').value.trim(); // Updated to use 'expiry' as ID
+    const expiryDate = document.getElementById('expiry').value.trim();
 
     document.getElementById('codeError').innerHTML = code === '' ? 'Coupon code is required.' : '';
-    document.getElementById('discountError').innerHTML = discount === '' ? 'Discount is required.' : '';
+    document.getElementById('discountError').innerHTML = discount === '' ? 'Discount is required.' : (discount >= 100 ? 'Discount should be less than 100.' : '');
     document.getElementById('minPurchaseError').innerHTML = minPurchase === '' ? 'Minimum purchase is required.' : '';
     document.getElementById('discountTypeError').innerHTML = discountType === '' ? 'Discount type is required.' : '';
     document.getElementById('expiryError').innerHTML = expiryDate === '' ? 'Expiry date is required.' : '';
 
-    return code !== '' && discount !== '' && minPurchase !== '' && discountType !== '' && expiryDate !== '';
+    return code !== '' && discount !== '' && discount < 100 && minPurchase !== '' && discountType !== '' && expiryDate !== '';
   }
 </script>
+
