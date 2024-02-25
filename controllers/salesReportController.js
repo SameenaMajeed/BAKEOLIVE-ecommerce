@@ -201,17 +201,66 @@ const compile = async function (templateName, data) {
     return ejs.compile(html)(data)
   }
   
+//   const exportPdfOrders = async (req, res) => {
+//     try {
+//         const { startDate, endDate } = req.query;
+//         let filteredDate = '';
+
+//         if (startDate && endDate) {
+//             filteredDate = `${startDate} to ${endDate}`;
+//         }
+
+//         const orderDatas = await Order.find({
+//             status: 'Delivered',
+//             orderPlacedAt: { $gte: new Date(startDate), $lte: new Date(endDate) },
+//         }).populate('products.product').lean();
+
+//         orderDatas.sort((a, b) => new Date(b.orderPlacedAt) - new Date(a.orderPlacedAt));
+
+//         const orderData = orderDatas.map((order) => {
+//             return {
+//                 ...order,
+//                 orderPlacedAt: new Date(order.orderPlacedAt).toLocaleDateString(),
+//             };
+//         });
+
+//         const content = await compile('pdf', { orderData: orderData, filteredDate: filteredDate });
+
+//         const browser = await puppeter.launch({ headless: "new" });
+//         const page = await browser.newPage();
+
+//         await page.setContent(content);
+
+//         const pdfBuffer = await page.pdf({
+//             format: 'A4',
+//             printBackground: true
+//         });
+
+//         res.setHeader('Content-Type', 'application/pdf');
+//         res.setHeader('Content-Disposition', 'attachment; filename=output.pdf');
+
+//         res.send(pdfBuffer);
+
+//         console.log('done creating pdf');
+
+//         await browser.close();
+//     } catch (err) {
+//         console.log(err.message);
+//     }
+// };
+
+
 const exportPdfOrders = async (req, res) => {
     try {
-  
-  
+      let filteredDate = '';
+    
       const browser = await puppeter.launch({ headless: "new" });
       console.log(browser)
   
       const page = await browser.newPage();
       const { startDate, endDate } = req.query;
       if (startDate && endDate) {
-  
+        filteredDate = `${startDate} to ${endDate}`;
         const orderDatas = await Order.find({ status: 'Delivered',orderPlacedAt: { $gte: new Date(startDate), $lte: new Date(endDate) } }).populate('products.product').lean();
         console.log('pdf orderDatas', orderDatas);
         orderDatas.sort((a, b) => new Date(b.orderPlacedAt) - new Date(a.orderPlacedAt));
@@ -222,7 +271,7 @@ const exportPdfOrders = async (req, res) => {
           };
         });
     
-        const content = await compile('pdf', { orderData: orderData });
+        const content = await compile('pdf', { orderData: orderData,filteredDate });
   
         await page.setContent(content);
   
@@ -243,7 +292,7 @@ const exportPdfOrders = async (req, res) => {
   
       }
       else {
-  
+        filteredDate = 'Nill';
         const orderDatas = await Order.find({ status: 'Delivered' }).populate('products.product').lean();
         console.log('else pdf orderDatas', orderDatas);
         orderDatas.sort((a, b) => new Date(b.orderPlacedAt) - new Date(a.orderPlacedAt));
@@ -255,7 +304,7 @@ const exportPdfOrders = async (req, res) => {
         });
   
 
-        const content = await compile('pdf', { orderData: orderData });
+        const content = await compile('pdf', { orderData: orderData ,filteredDate});
   
         await page.setContent(content);
   
