@@ -119,115 +119,35 @@ const cancelOrder = async (req, res) => {
     }
 };
 
-
-
-// const cancelOrder = async (req, res) => {
+// const cancelTime = async (req, res) => {
 //     try {
-//         const { orderId } = req.params;
-//         const user = req.session.user_id;
+//         const orderId = req.params.orderId;
+//         console.log('orderId:',orderId)
 
+//         // Assuming your Order model has a field named "orderPlacedAt" representing the order placement time
 //         const order = await Order.findById(orderId);
+//         console.log('order:',order)
 
 //         if (!order) {
-//             return res.status(404).json({ message: 'Order not found' });
+//             return res.status(404).json({ error: 'Order not found' });
 //         }
 
-//         const currentTime = new Date();
-//         const orderPlacedTime = order.orderPlacedAt; // Use the correct field for order placement time
-//         const timeDifferenceInHours = (currentTime - orderPlacedTime) / (1000 * 60 * 60);
+//         const orderPlacedTime = order.orderPlacedAt; 
+//         console.log('orderPlacedTime:',orderPlacedTime)
 
-//         if (timeDifferenceInHours > 4) {
-//             return res.status(400).json({ message: 'Cannot cancel order after 4 hours' });
-//         }
-
-//         const canceledAmount = order.totalPrice;
-//         const updatedOrder = await Order.findByIdAndUpdate(
-//             orderId,
-//             {
-//                 $set: { status: 'Cancelled', is_cancelled: true },
-//                 $inc: { walletAmount: canceledAmount },
-//             },
-//             { new: true }
-//         );
-
-//         const orderData = await Order.findById(orderId);
-
-//         // Use WalletHistory model instead of Wallet
-//         const count = await WalletHistory.countDocuments({ userId: user });
-//         console.log('count', count);
-
-//         if (orderData && orderData.is_cancelled === true) {
-//             const totalAmount = orderData.totalPrice;
-//             console.log('total', totalAmount);
-
-//             if (count === 0) {
-//                 const wallet = new WalletHistory({
-//                     userId: user,
-//                     totalPrice: totalAmount,
-//                 });
-//                 await wallet.save();
-//             } else if (count > 0) {
-//                 const wallet1 = await WalletHistory.findOne({ userId: user });
-//                 if (wallet1) {
-//                     await WalletHistory.findOneAndUpdate(
-//                         { userId: user },
-//                         { $inc: { totalPrice: totalAmount } },
-//                         { new: true }
-//                     );
-//                 } else {
-//                     const wallet = new WalletHistory({
-//                         userId: user,
-//                         totalPrice: totalAmount,
-//                     });
-//                     await wallet.save();
-//                 }
-//             }
-//         }
-
-//         // Handle product quantity and status updates
-
-//         if (updatedOrder) {
-//             const response = {
-//                 message: 'Order cancelled successfully',
-//             };
-//             res.status(200).json(response);
-//         } else {
-//             res.status(500).json({ error: 'Error updating order' });
-//         }
+//         res.status(200).json({ orderPlacedTime });
 //     } catch (error) {
-//         console.log(error.message);
+//         console.error('Error fetching order-placed time:', error);
 //         res.status(500).json({ error: 'Internal Server Error' });
 //     }
-// };
-
-const cancelTime = async (req, res) => {
-    try {
-        const { orderId } = req.params;
-        console.log('req.params:',req.params)
-
-        // Fetch the order from your database and retrieve the order placement time
-        const order = await Order.findById(orderId);
-
-        if (!order) {
-            return res.status(404).json({ message: 'Order not found' });
-        }
-
-        // Assuming your order model has a field called 'orderPlacedAt' under 'address'
-        const orderPlacedTime = order.address.orderPlacedAt;
-        console.log('orderPlacedTime:',orderPlacedTime)
-
-        res.status(200).json({ orderPlacedTime });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-}
+// }
 
 
 module.exports = {
     loadOrder,
     updateOrderStatus,
     cancelOrder,
-    cancelTime
+    // Cancel,
+    // cancelTime
     // changeStatus,refund,  
 };

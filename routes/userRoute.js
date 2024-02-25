@@ -126,7 +126,9 @@ const orderController = require('../controllers/orderController')
 
 user_route.post('/cancel-order/:orderId', auth.isLogin, orderController.cancelOrder);
 
-user_route.get('/order-placed-time/:orderId',orderController.cancelTime)
+// user_route.post('/cancel-product/:orderId/:productId', orderController.Cancel)
+
+// user_route.get('/order-placed-time/:orderId',orderController.cancelTime)
 
 // .....................Wishlist.................................................
 
