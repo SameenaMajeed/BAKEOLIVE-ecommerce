@@ -226,7 +226,6 @@ const verifyLogin = async (req, res) => {
 const loadHome = async (req, res) => {
     try {
         const userId = req.session.user_id;
-        console.log(userId)
 
         const user = await User.findById(req.session.user_id);
         if (user) {
@@ -436,16 +435,16 @@ const resetPassword = async (req, res) => {
 
 const profileLoad = async (req, res) => {
     try {
+        
         const userId = req.session.user_id;
-
+        
         const user = await User.findById(userId).exec();
-
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        const orderDetails = await OrderModel.find({ userId }).populate('products.product');
-
+        const orderDetails = await OrderModel.find({ userId }).populate('products.product')
+        
         if (orderDetails.length === 0) {
             return res.render('profile', { user, orderDetails: null, userId });
         }

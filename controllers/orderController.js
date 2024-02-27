@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const Order = require('../model/orderModel');
 
 const Wallet = require('../model/walletHistoryModel')
@@ -40,6 +42,7 @@ const updateOrderStatus = async (req, res) => {
 
 // ..........user..............................
 
+
 const cancelOrder = async (req, res) => {
     try {
         const { orderId } = req.params;
@@ -60,7 +63,7 @@ const cancelOrder = async (req, res) => {
         }
 
         const canceledAmount = order.totalPrice;
-        
+
         // Log to check if the canceledAmount is correct
         console.log('Canceled Amount:', canceledAmount);
 
@@ -119,35 +122,92 @@ const cancelOrder = async (req, res) => {
     }
 };
 
-// const cancelTime = async (req, res) => {
+// const CancelProduct = async (req, res) => {
 //     try {
 //         const orderId = req.params.orderId;
-//         console.log('orderId:',orderId)
+//         const productId = req.params.productId;
+//         const user = req.session.user_id;
 
-//         // Assuming your Order model has a field named "orderPlacedAt" representing the order placement time
+//         // Check if the order is within the cancellation time limit (4 hours)
 //         const order = await Order.findById(orderId);
-//         console.log('order:',order)
+//         const currentTime = new Date();
+//         const orderPlacedTime = order.orderPlacedAt;
+//         const timeDifferenceInHours = (currentTime - orderPlacedTime) / (1000 * 60 * 60);
 
-//         if (!order) {
-//             return res.status(404).json({ error: 'Order not found' });
+//         if (timeDifferenceInHours > 4) {
+//             // If more than 4 hours have passed, cancellation is not allowed
+//             return res.json({ success: false, error: 'Cancellation time limit exceeded' });
 //         }
 
-//         const orderPlacedTime = order.orderPlacedAt; 
-//         console.log('orderPlacedTime:',orderPlacedTime)
+//         // Find the product to be canceled
+//         const productToCancel = order.products.find(product => product._id.toString() === productId);
 
-//         res.status(200).json({ orderPlacedTime });
+//         if (!productToCancel) {
+//             return res.status(404).json({ success: false, error: 'Product not found in the order' });
+//         }
+
+//         // Perform logic to update the order (remove the canceled product)
+//         const canceledAmount = productToCancel.price * productToCancel.quantity;
+//         console.log('canceledAmount:',canceledAmount)
+
+//         const updatedOrder = await Order.findByIdAndUpdate(
+//             orderId,
+//             {
+//                 $set: {
+//                     'products.$[elem].status': 'Cancelled',
+//                     'products.$[elem].is_cancelled': true,
+//                 },
+//                 $inc: { walletAmount: canceledAmount },
+//             },
+//             {
+//                 new: true,
+//                 arrayFilters: [{ 'elem._id': productToCancel._id, 'elem.is_cancelled': { $ne: true } }],
+//             }
+//         );
+
+//         console.log('updatedOrder:',updatedOrder)
+
+//         // Update WalletHistory
+//         const walletData = {
+//             userId: user,
+//             totalPrice: canceledAmount,
+//         };
+
+//         const wallet1 = await Wallet.findOne({ userId: user });
+
+//         if (wallet1) {
+//             await Wallet.findByIdAndUpdate(wallet1._id, {
+//                 $inc: { totalPrice: canceledAmount },
+//             });
+//         } else {
+//             const wallet = new Wallet(walletData);
+//             await wallet.save();
+//         }
+
+//         // Handle product quantity and status updates
+
+//         if (updatedOrder) {
+//             const response = {
+//                 message: 'Order cancelled successfully',
+//             };
+//             res.status(200).json(response);
+//         } else {
+//             res.status(500).json({ error: 'Error updating order' });
+//         }
 //     } catch (error) {
-//         console.error('Error fetching order-placed time:', error);
-//         res.status(500).json({ error: 'Internal Server Error' });
+//         console.error('Error:', error);
+//         // Send an error response
+//         res.status(500).json({ success: false, error: 'Internal Server Error' });
 //     }
-// }
+// };
+
 
 
 module.exports = {
     loadOrder,
     updateOrderStatus,
     cancelOrder,
-    // Cancel,
+    // CancelProduct,
     // cancelTime
     // changeStatus,refund,  
 };
