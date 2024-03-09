@@ -343,7 +343,7 @@ const forgetVerify = async (req, res) => {
         if (userData) {
 
             if (userData.is_verified === 0) {
-                res.render('forget', { message: 'Please verify your mail' })
+                res.render('forgetLoad', { message: 'Please verify your mail' })
             } else {
                 const randomString = randomstring.generate()
                 const updatedData = await User.updateOne({ email: email }, { $set: { token: randomString } })
