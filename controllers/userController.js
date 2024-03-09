@@ -378,7 +378,7 @@ const sendResetPasswordMail = async (email, user_id, token) => {
             from: 'ssameen584@gmail.com',
             to: email,
             subject: 'For Verification',
-            html: `<p>Click the link <a href="http://bakeolive.shop/changePassword?token=${token}">here</a></p>`
+            html: `<p>Click the link <a href="http://13.238.252.35/changePassword?token=${token}">here</a></p>`
         }
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
