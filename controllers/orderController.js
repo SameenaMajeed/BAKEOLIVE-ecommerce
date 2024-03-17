@@ -8,14 +8,34 @@ const Product = require('../model/productModel')
 
 const loadOrder = async (req, res) => {
     try {
-        const orders = await Order.find();
-        res.render('order-list', { orders });
+        const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+        const limit = 5; // Number of orders per page
 
+        const totalCount = await Order.countDocuments();
+        const totalPages = Math.ceil(totalCount / limit);
+
+        const orders = await Order.find()
+            .skip((page - 1) * limit)
+            .limit(limit);
+
+        res.render('order-list', { orders, totalPages, currentPage: page });
     } catch (error) {
         console.log(error.message);
         res.status(500).send('Internal Server Error');
     }
 };
+
+
+// const loadOrder = async (req, res) => {
+//     try {
+//         const orders = await Order.find();
+//         res.render('order-list', { orders });
+
+//     } catch (error) {
+//         console.log(error.message);
+//         res.status(500).send('Internal Server Error');
+//     }
+// };
 
 const updateOrderStatus = async (req, res) => {
     try {

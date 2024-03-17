@@ -259,18 +259,51 @@ const loadProductDetails = async (req, res) => {
 
 // .........................admmin.................................
 
+
 const loadProductList = async (req, res) => {
-
     try {
-        const activeProducts = await Product.find({ is_disabled: false }).populate('category_id');
+        // Pagination parameters
+        const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+        const limit = 5; // Number of documents per page
 
-        res.render('Products', { product: activeProducts });
+        // Calculate the skip value
+        const skip = (page - 1) * limit;
 
+        // Query to count total active products
+        const totalCount = await Product.countDocuments({ is_disabled: false });
+
+        // Query to fetch active products with pagination
+        const activeProducts = await Product.find({ is_disabled: false })
+            .populate('category_id')
+            .skip(skip)
+            .limit(limit);
+
+        // Render the Products view with pagination data
+        res.render('Products', {
+            product: activeProducts,
+            currentPage: page,
+            totalPages: Math.ceil(totalCount / limit)
+        });
     } catch (error) {
         console.log(error.message);
+        // Handle error response
+        res.status(500).send('Internal Server Error');
     }
+};
 
-}
+
+// const loadProductList = async (req, res) => {
+
+//     try {
+//         const activeProducts = await Product.find({ is_disabled: false }).populate('category_id');
+
+//         res.render('Products', { product: activeProducts });
+
+//     } catch (error) {
+//         console.log(error.message);
+//     }
+
+// }
 
 
 const loadProduct = async (req, res) => {

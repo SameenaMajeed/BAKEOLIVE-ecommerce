@@ -12,42 +12,91 @@ const Order = require('../model/orderModel');
 
 
 const loadReport = async (req, res) => {
-    try {
-        if (req.query.startDate && req.query.endDate) {
-            const filteredOrders = await Order.find({
-                status: 'Delivered',
-                orderPlacedAt: {
-                    $gte: new Date(req.query.startDate),
-                    $lte: new Date(req.query.endDate),
-                },
-            })
-                .populate('products.product') // Update this line
-                .exec();
+  try {
+      const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+      const limit = 3; // Number of documents per page
+      console.log('endDate:',req.query.endDate)
 
-            filteredOrders.sort((a, b) => new Date(b.orderPlacedAt) - new Date(a.orderPlacedAt));
-            console.log('filteredOrders:', filteredOrders);
+      if (req.query.startDate && req.query.endDate) {
+          const filteredOrders = await Order.find({
+              status: 'Delivered',
+              orderPlacedAt: {
+                  $gte: new Date(req.query.startDate),
+                  $lte: new Date(req.query.endDate),
+              },
+          })
+          .populate('products.product')
+          .sort({ orderPlacedAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit);
 
-            if (filteredOrders) {
-                res.status(200).json(filteredOrders);
-            }
-        } else {
-            const orderDatas = await Order.find({ status: 'Delivered' }).populate('products.product').lean();
-            orderDatas.sort((a, b) => new Date(b.orderPlacedAt) - new Date(a.orderPlacedAt));
-            const orderData = orderDatas.map((order) => {
-                return {
-                    ...order,
-                    orderPlacedAt: new Date(order.orderPlacedAt).toLocaleDateString(),
-                };
-            });
+          console.log('filteredOrders:', filteredOrders);
 
-            console.log('orderData are :',orderData )
+          res.status(200).json(filteredOrders);
+      } else {
+          const totalCount = await Order.countDocuments({ status: 'Delivered' });
+          const totalPages = Math.ceil(totalCount / limit);
 
-            res.render('salesReport', { orderData });
-        }
-    } catch (err) {
-        console.log(err.message);
-    }
-}
+          const orderDatas = await Order.find({ status: 'Delivered' })
+          .populate('products.product')
+          .sort({ orderPlacedAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .lean();
+
+          const orderData = orderDatas.map((order) => ({
+              ...order,
+              orderPlacedAt: new Date(order.orderPlacedAt).toLocaleDateString(),
+          }));
+
+          console.log('orderData:', orderData);
+
+          res.render('salesReport', { orderData, totalPages, currentPage: page });
+      }
+  } catch (err) {
+      console.log(err.message);
+      res.status(500).send('Internal Server Error');
+  }
+};
+
+
+// const loadReport = async (req, res) => {
+//     try {
+//         if (req.query.startDate && req.query.endDate) {
+//             const filteredOrders = await Order.find({
+//                 status: 'Delivered',
+//                 orderPlacedAt: {
+//                     $gte: new Date(req.query.startDate),
+//                     $lte: new Date(req.query.endDate),
+//                 },
+//             })
+//                 .populate('products.product') // Update this line
+//                 .exec();
+
+//             filteredOrders.sort((a, b) => new Date(b.orderPlacedAt) - new Date(a.orderPlacedAt));
+//             console.log('filteredOrders:', filteredOrders);
+
+//             if (filteredOrders) {
+//                 res.status(200).json(filteredOrders);
+//             }
+//         } else {
+//             const orderDatas = await Order.find({ status: 'Delivered' }).populate('products.product').lean();
+//             orderDatas.sort((a, b) => new Date(b.orderPlacedAt) - new Date(a.orderPlacedAt));
+//             const orderData = orderDatas.map((order) => {
+//                 return {
+//                     ...order,
+//                     orderPlacedAt: new Date(order.orderPlacedAt).toLocaleDateString(),
+//                 };
+//             });
+
+//             console.log('orderData are :',orderData )
+
+//             res.render('salesReport', { orderData });
+//         }
+//     } catch (err) {
+//         console.log(err.message);
+//     }
+// }
 
 const exportExcelOrders = async (req, res) => {
 

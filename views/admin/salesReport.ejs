@@ -40,7 +40,7 @@
             </div>
         </div>
         <br><br>
-        
+
         <div class="table-responsive">
             <table class="table my-3 table-hover" id="userTable">
 
@@ -131,6 +131,17 @@
                 </tbody>
             </table>
         </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <% for (let i=1; i <=totalPages; i++) { %>
+                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %>">
+                            <%= i %>
+                        </a>
+                    </li>
+                    <% } %>
+            </ul>
+        </nav>
     </div>
 
     <script>
@@ -172,62 +183,62 @@
             var tableBody = document.getElementById('userTable').getElementsByTagName('tbody')[0];
             tableBody.innerHTML = '';
             if (filteredData.length != 0) {
-            // Check if filteredData is an array
-            if (Array.isArray(filteredData)) {
-                // Append each row of filtered data to the table
-                filteredData.forEach(function (value) {
-                    var row = tableBody.insertRow();
+                // Check if filteredData is an array
+                if (Array.isArray(filteredData)) {
+                    // Append each row of filtered data to the table
+                    filteredData.forEach(function (value) {
+                        var row = tableBody.insertRow();
 
-                    // Check if the value is defined
-                    if (value) {
-                        // Add other cells and populate with data as needed
-                        var imagesCell = row.insertCell(0);
+                        // Check if the value is defined
+                        if (value) {
+                            // Add other cells and populate with data as needed
+                            var imagesCell = row.insertCell(0);
 
-                        if (
-                            value.products &&
-                            Array.isArray(value.products) &&
-                            value.products.length > 0 &&
-                            value.products[0].product &&
-                            value.products[0].product.image &&
-                            Array.isArray(value.products[0].product.image) &&
-                            value.products[0].product.image.length > 0
-                        ) {
-                            // Display only the first image
-                            var imgElement = document.createElement('img');
-                            imgElement.src = "/public/productImage/" + value.products[0].product.image[0]; // Adjust the path if needed
-                            imgElement.style.width = "150px";
-                            imgElement.style.height = "150px";
-                            imagesCell.appendChild(imgElement);
-                        } else {
-                            // Handle the case when the images are not available
-                            imagesCell.textContent = 'No images found';
-                        }
+                            if (
+                                value.products &&
+                                Array.isArray(value.products) &&
+                                value.products.length > 0 &&
+                                value.products[0].product &&
+                                value.products[0].product.image &&
+                                Array.isArray(value.products[0].product.image) &&
+                                value.products[0].product.image.length > 0
+                            ) {
+                                // Display only the first image
+                                var imgElement = document.createElement('img');
+                                imgElement.src = "/public/productImage/" + value.products[0].product.image[0]; // Adjust the path if needed
+                                imgElement.style.width = "150px";
+                                imgElement.style.height = "150px";
+                                imagesCell.appendChild(imgElement);
+                            } else {
+                                // Handle the case when the images are not available
+                                imagesCell.textContent = 'No images found';
+                            }
 
-                        // Add other cells and populate with data as needed
-                        // Adjust the following lines based on your data structure
-                        row.insertCell(1).textContent = value.products[0]?.product?.name || 'N/A';
-                        row.insertCell(2).textContent = value.products.map(product => product.quantity).join('<br>') || 'N/A';
-                        row.insertCell(3).textContent = value.totalPrice || 'N/A';
-                        var addressCell = row.insertCell(4);
-                        if (value.address && typeof value.address === 'object') {
-                            addressCell.innerHTML = `
+                            // Add other cells and populate with data as needed
+                            // Adjust the following lines based on your data structure
+                            row.insertCell(1).textContent = value.products[0]?.product?.name || 'N/A';
+                            row.insertCell(2).textContent = value.products.map(product => product.quantity).join('<br>') || 'N/A';
+                            row.insertCell(3).textContent = value.totalPrice || 'N/A';
+                            var addressCell = row.insertCell(4);
+                            if (value.address && typeof value.address === 'object') {
+                                addressCell.innerHTML = `
                         ${value.address.address || 'N/A'}<br>
                         Pincode: ${value.address.pincode || 'N/A'}<br>
                         District: ${value.address.district || 'N/A'}<br>
                         City: ${value.address.city || 'N/A'}
                     `;
-                        } else {
-                            addressCell.textContent = 'N/A';
-                        }
+                            } else {
+                                addressCell.textContent = 'N/A';
+                            }
 
-                        row.insertCell(5).textContent = value.name || 'N/A';
-                        row.insertCell(6).textContent = value.email || 'N/A';
-                        row.insertCell(7).textContent = value.paymentMethod || 'N/A';
-                        row.insertCell(8).textContent = new Date(value.orderPlacedAt).toLocaleDateString() || 'N/A';
-                    }
-                });
-            }
-         } else {
+                            row.insertCell(5).textContent = value.name || 'N/A';
+                            row.insertCell(6).textContent = value.email || 'N/A';
+                            row.insertCell(7).textContent = value.paymentMethod || 'N/A';
+                            row.insertCell(8).textContent = new Date(value.orderPlacedAt).toLocaleDateString() || 'N/A';
+                        }
+                    });
+                }
+            } else {
                 // If filteredData is empty, display a message in a single row
                 var row = tableBody.insertRow();
                 var cell = row.insertCell(0);
