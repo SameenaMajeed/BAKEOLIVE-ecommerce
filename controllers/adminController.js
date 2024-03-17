@@ -91,16 +91,36 @@ const logout = async (req, res) => {
 }
 
 const userList = async (req, res) => {
-
     try {
+        const page = parseInt(req.query.page) || 1; // Default to page 1 if not provided
+        const limit = 15; // Number of users per page
+
+        const totalCount = await User.countDocuments({ is_admin: 0 });
+        const totalPages = Math.ceil(totalCount / limit);
 
         const userData = await User.find({ is_admin: 0 })
-        res.render('userList', { user: userData })
+            .skip((page - 1) * limit)
+            .limit(limit);
 
+        res.render('userList', { user: userData, totalPages, currentPage: page });
     } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
+        res.status(500).send('Internal Server Error');
     }
-}
+};
+
+
+// const userList = async (req, res) => {
+
+//     try {
+
+//         const userData = await User.find({ is_admin: 0 })
+//         res.render('userList', { user: userData })
+
+//     } catch (error) {
+//         console.log(error.message)
+//     }
+// }
 
 
 const blockUser = async (req, res) => {
